@@ -224,7 +224,7 @@ class YearlySchedule {
                 } else if (xml.isCharacters()) {
                     String text = xml.getText();
                     if (text.contains("Final exam days")) {
-                        currQuarter = text.replaceAll("Final exam days for ", "");
+                        currQuarter = text;
                     } else if (text.contains("If your class meets")) {
                         currWeekdayKeyword = new StringBuilder();
 
