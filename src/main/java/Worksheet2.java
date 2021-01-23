@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ import java.util.stream.Collectors;
 
 public class Worksheet2 {
     public static void main(String[] args) throws IOException, XMLStreamException {
-//        String htmlString = readHTTP(new URL("https://www.bellevuecollege.edu/courses/exams/"));
-        String htmlString = Files.readString(Path.of("Final Exam Schedule Classes.html"));
+        String htmlString = readHTTP(new URL("https://www.bellevuecollege.edu/courses/exams/"));
+//        String htmlString = Files.readString(Path.of("Final Exam Schedule Classes.html"));
 
         var matchInvalidXML = Pattern.compile(
                 "(&[^;]*;)|(<meta[^>]*>)|(<script.*?</script>)",
@@ -38,7 +39,8 @@ public class Worksheet2 {
     static String readHTTP(URL url) throws IOException {
         var connection = url.openConnection();
         connection.setRequestProperty("user-Agent", "Mozilla/5.0");
-        try (var reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+        var streamReader = new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8);
+        try (var reader = new BufferedReader(streamReader)) {
             return reader
                     .lines()
                     .collect(Collectors.joining("\n"));
@@ -113,6 +115,11 @@ class Entry {
         Entry entry = (Entry) o;
         return classTime.equals(entry.classTime) && examDay.equals(entry.examDay) && examTime.equals(
                 entry.examTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(classTime, examDay, examTime);
     }
 
     @Override
@@ -301,6 +308,11 @@ class YearlySchedule {
         }
         YearlySchedule that = (YearlySchedule) o;
         return schedules.equals(that.schedules);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(schedules);
     }
 
     @Override
