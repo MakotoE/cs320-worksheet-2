@@ -201,7 +201,7 @@ class YearlySchedule {
 
         try {
             String currQuarter = "";
-            StringBuilder currWeekdayKeyword = new StringBuilder();
+            String currWeekdayKeyword = "";
 
             while (xml.hasNext()) {
                 xml.next();
@@ -215,7 +215,7 @@ class YearlySchedule {
 
                             yearlySchedule.addSchedule(
                                     currQuarter,
-                                    currWeekdayKeyword.toString(),
+                                    currWeekdayKeyword,
                                     readEntries(xml)
                             );
                             break;
@@ -226,14 +226,15 @@ class YearlySchedule {
                     if (text.contains("Final exam days")) {
                         currQuarter = text;
                     } else if (text.contains("If your class meets")) {
-                        currWeekdayKeyword = new StringBuilder();
-
+                        var builder = new StringBuilder();
                         while (!Util.isAtEndTag(xml, "span")) {
                             if (xml.isCharacters()) {
-                                currWeekdayKeyword.append(xml.getText());
+                                builder.append(xml.getText());
                             }
                             xml.next();
                         }
+
+                        currWeekdayKeyword = builder.toString();
                     }
                 }
             }
